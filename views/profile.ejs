@@ -1,0 +1,134 @@
+<% layout('layout/boilerplate') %>
+
+    <style>
+        span {
+            margin: 10px;
+            color: purple;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 500;
+            line-height: 24px;
+        }
+
+        i {
+            margin: 12px;
+        }
+
+        .profile {
+            width: 60%;
+            font-size: 2rem;
+            /* text-align: left; */
+        }
+
+        @media screen and (max-width: 991px) {
+            .profile {
+                width: 80%;
+            }
+        }
+
+        .profile {
+            font-size: 20px;
+        }
+
+        @media screen and (max-width:767px) and (min-width: 576px){
+            .profile{
+                font-size: 18px;
+            }
+        }
+
+        @media screen and (max-width:556px) and (min-width: 414px){
+            .profile{
+                font-size: 3.35vw;
+            }
+        }
+
+        @media screen and (max-width: 413px) {
+            .profile{
+                font-size: 3.25vw;
+            }
+        }
+
+
+    </style>
+
+
+
+    <h1><img src="<%= currentUser.profilePicUrl %>" alt="" width="60px" height="60px" style="border-radius: 50%;"> PROFILE</h1>
+
+    <div class="profile mb-4"
+        style="background-color: white; padding:5%; margin-left: auto;margin-right: auto; border-radius: 10px;border: dashed purple; ">
+
+
+        <span><i class="fa-solid fa-user"></i>Name:
+            <%= currentUser.name %>
+        </span>
+        <br>
+        <span><i class="fa-solid fa-envelope"></i>Email: 
+            <%= currentUser.email %>
+        </span>
+        
+
+        <br>
+        <span> <i class="fa-solid fa-file"></i>Applications: <%= currentUser.loans.length %></span>
+        <br>
+        <% const loa=currentUser.loans.filter((x)=> { return x.isPending === true }); %>
+
+        <span> <i class="fa-solid fa-circle-exclamation"></i>Pending: <%= loa.length %></span>
+        <br>
+        <span> <i class="fa-solid fa-check-to-slot"></i>Closed: <%= currentUser.loans.length - loa.length %></span>
+        <br>
+        <% if(currentUser.aadharNumber !=='' ){ %>
+            <span><i class="fa-solid fa-id-card"></i>Aadhar: 
+                <%= currentUser.aadharNumber %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-id-card-clip"></i>PAN: 
+                <%= currentUser.panNumber %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-building-columns"></i>Acc.No: 
+                <%= currentUser.accountNumber %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-money-check"></i>IFSC: 
+                <%= currentUser.ifscCode %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-sack-dollar"></i>CTC: 
+                <%= currentUser.ctc %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-check-to-slot"></i>CIBIL: 
+                <%= currentUser.cibil %>
+            </span>
+            <br>
+            <span><i class="fa-solid fa-handshake-simple"></i>Max Loan Amount: 
+                <%= currentUser.max_amount %>
+            </span>
+            <br>
+            <% }else{ %>
+                <br>
+                Update Aadhar and PAN details <a href="/profile/update">here</a>
+                <br>
+                <% } %>
+
+                <div style="display: flex; justify-content: center;">
+                    <a href="/profile/update" id="btn" class="btn mt-2 "
+                    style="background-color:rgb(107, 14, 194); color: white; font-size: 18px;">Update</a>
+                </div>
+               
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

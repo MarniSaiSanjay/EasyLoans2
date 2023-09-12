@@ -1,0 +1,68 @@
+<% layout('layout/boilerplate') %>
+
+
+    <style>
+        body {
+            background-image: linear-gradient(to right, #EE6D98, #8A5EBF);
+        }
+
+        input,
+        select {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            font-family: 'Poppins', sans-serif;
+            width: 70%;
+            background-color: rgba(129, 125, 125, 0.137);
+        }
+
+        /* .img_loan{
+            width: 110%;
+        } */
+
+        @media screen and (max-width: 760px) {
+
+            input,
+            select {
+                width: 95%;
+            }
+        }
+    </style>
+
+
+    <div class="contact">
+        <form action="/loan/apply" method="post" style="padding: 10px; margin-top: 60px; text-align: center;">
+            <div class="row"
+                style="background-color: white; padding:5%;margin-left: 10%;margin-right: 10%; border-radius: 10px; margin-top: -3%;margin-bottom: 0%;">
+                <h1 class="mb-4">THIS IS A FORM</h1>
+
+                <div class="col-lg-6" class="form" style="background-color: white;">
+                    <input type="number" name="amount" id="amount" placeholder="Amount" required>
+                    <br>
+                    <input type="number" name="interest" id="interest" step=".01" placeholder="Interest" required>
+                    <br>
+                    <input type="number" name="timePeriod" id="timePeriod" step=".1" placeholder="Tenure" required>
+                    <br>
+
+                    <select name="category" id="" required>
+                        <option value="provide">Provide</option>
+                        <option value="request">Request</option>
+                    </select>
+                    <div class="btns my-2">
+                        <button type="submit" id="btn" class="btn"
+                            style="background-color:rgb(107, 14, 194); color: white;">Submit</button>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <img src="/stylesheets/loan_form.jpg" height="300vh" width="300vh" style="width: 100%;"
+                        class="ms-auto me-auto">
+                </div>
+
+            </div>
+        </form>
+    </div>

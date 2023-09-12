@@ -1,0 +1,110 @@
+<% layout('layout/boilerplate') %>
+
+
+<style>
+    input,
+    select {
+        padding: 10px;
+        border: none;
+        border-radius: 10px;
+        margin: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        font-family: 'Poppins', sans-serif;
+        width: 100%;
+        background-color: rgba(129, 125, 125, 0.137);
+    }
+
+    label {
+        font-size: 16px;
+        font-weight: 500;
+        line-height: 24px;
+        font-family: 'Poppins', sans-serif;
+        color: purple;
+        align-self: center;
+        /* margin-left: 20px; */
+    }
+
+    
+    @media screen and (max-width:575px) {
+        label{
+            padding-left: 5px;
+        }
+    }
+
+    @media screen and (min-width: 576px) {
+        label{
+            padding-left: 1.1vw;
+        }
+    }
+
+    .btns {
+        display: flex;
+        justify-content: center;
+    }
+
+    .row {
+        width: 60%;
+    }
+
+    @media screen and (max-width: 991px) {
+        .row {
+            width: 95%;
+        }
+        input, select{
+            width: 100%;
+            position: relative;
+            right: 8px;
+        }
+    }
+</style>
+    <!-- <form action="/loan/<%= loan.id %>/edit?_method=PUT" method="post" class="needs-validation" novalidate>
+        Amount: <input type="number" name="amount" id="action" value="<%= loan.amount %>">
+        Interest: <input type="number" name="interest" id="interest" step=".01" value="<%= loan.interest %>">
+        TimePeriod: <input type="number" name="timePeriod" id="timePeriod" step=".1" value="<%= loan.timePeriod %>">
+        <select name="category" id="">
+            <option value="provide" <%=loan.category=='provide' ? 'selected' : '' %> >Provide</option>
+            <option value="request" <%=loan.category=='request' ? 'selected' : '' %>>Request</option>
+        </select>
+        <button type="submit">Submit</button>
+    </form> -->
+
+
+
+    <h1>Update Loan Details </h1>
+
+
+    <form action="/loan/<%= loan.id %>/edit?_method=PUT" method="post" style="padding: 10px 10px 5px 10px;" class="mb-3" >
+        <div class="row"
+            style="background-color: white; padding:5%; margin-left: auto;margin-right: auto; border-radius: 10px;border: dashed purple; ">
+
+            <div>
+                <label>Amount</label>
+                <br>
+                <input type="number" name="amount" id="action" value="<%= loan.amount %>" required>
+
+                <br>
+                <label>Interest</label>
+                <br>
+                <input type="number" name="interest" id="interest" step=".01" value="<%= loan.interest %>" required>
+                
+                <label>Tenure</label>
+                <br>
+                <input type="number" name="timePeriod" id="timePeriod" step=".1" value="<%= loan.timePeriod %>" required>
+                
+                <label for="category">Category</label>
+                <select name="category" id="category">
+                    <option value="provide" <%=loan.category=='provide' ? 'selected' : '' %> >Provide</option>
+                    <option value="request" <%=loan.category=='request' ? 'selected' : '' %>>Request</option>
+                </select>
+               
+            </div>
+
+            <div class="btns">
+                <button type="submit" id="btn" class="btn mt-2"
+                    style="background-color:rgb(107, 14, 194); color: white; font-size: 20px;">Update</button>
+            </div>
+
+        </div>
+    </form>

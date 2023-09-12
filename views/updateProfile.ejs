@@ -1,0 +1,284 @@
+<% layout('layout/boilerplate') %>
+
+    <style>
+        input,
+        textarea {
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            margin: 10px;
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            font-family: 'Poppins', sans-serif;
+            width: 100%;
+            background-color: rgba(129, 125, 125, 0.137);
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 24px;
+            font-family: 'Poppins', sans-serif;
+            color: purple;
+            align-self: center;
+            margin-left: 20px;
+        }
+
+        .btns {
+            display: flex;
+            justify-content: center;
+        }
+
+        .row {
+            width: 60%;
+        }
+
+        @media screen and (max-width: 991px) {
+            .row {
+                width: 80%;
+            }
+        }
+    </style>
+
+    <h1>Update Profile</h1>
+
+
+    <div style="display: flex; flex-direction: row; justify-content: space-between;">
+        <div class="btns">
+            <button type="submit" id="btn" class="btn"
+                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
+                data-bs-target="#aadharPicModal">
+                <% if(user.aadharPic.length ===1){ %> 
+                Update Aadhar
+                <% }else{ %> 
+                    Add Aadhar
+                    <% } %> 
+            </button>
+        </div>
+
+        <div class="btns">
+            <button type="submit" id="btn" class="btn"
+                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
+                data-bs-target="#panPicModal">
+                <% if(user.panPic.length ===1){ %> 
+                    Update PAN
+                    <% }else{ %> 
+                        Add PAN
+                        <% } %> 
+            </button>
+        </div>
+    </div>
+
+
+    <form action="/profile/update" method="POST" style="padding: 10px 10px 5px 10px;" class="mb-3" >
+        <div class="row"
+            style="background-color: white; padding:5%; margin-left: auto;margin-right: auto; border-radius: 10px;border: dashed purple; ">
+
+            <div>
+                <label>Name</label>
+                <br>
+                <input type="text" name="name" value="<%= user.name %>" required>
+                <br>
+                <label>Email</label>
+                <br>
+                <input type="email" name="email" class="text-muted" value="<%= user.email %>" readonly>
+                <label>Account Number</label>
+                <br>
+                <input type="text" name="accountNumber"
+                    value="<%= user.accountNumber !== undefined ? user.accountNumber : '' %>"
+                    placeholder="Account Number" title="Enter correct details" required minlength="9" maxlength="18">
+                <label>IFSC Code</label>
+                <br>
+                <input type="text" name="ifscCode" value="<%= user.ifscCode !== undefined ? user.ifscCode : '' %>"
+                    required pattern="[A-Za-z]{4}0[A-Z0-9a-z]{6}" placeholder="IFSC Code"
+                    title="Enter correct IFSC Code">
+                <br>
+                <label>CTC</label>
+                <br>
+                <input type="number" name="ctc" value="<%= user.ctc %>" required>
+                <label>Aadhar Number</label>
+                <br>
+                <input type="text" pattern="[2-9]{1}[0-9]{3}\s{1}[0-9]{4}\s{1}[0-9]{4}$" name="aadharNumber"
+                    id="aadharNumber" maxlength="14" placeholder="XXXX XXXX XXXX"
+                    title="Please enter your Aadhar Number"
+                    value="<%= user.aadharNumber !== 'undefined' ? user.aadharNumber : '' %>" required>
+                <br>
+                <label>PAN Number</label>
+                <br>
+                <input type="text" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" name="panNumber" id="panNumber" maxlength="10"
+                    placeholder="AAAAA0000A"
+                    title="Please enter your PAN card Number(Make sure to use Capital letters only)"
+                    value="<%= user.panNumber !== 'undefined' ? user.panNumber : '' %>" required>
+            </div>
+
+            <div class="btns">
+                <button type="submit" id="btn" class="btn "
+                    style="background-color:rgb(107, 14, 194); color: white; font-size: 20px;">Update</button>
+            </div>
+
+        </div>
+    </form>
+
+
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="aadharPicModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="aadharPicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="aadharPicModalLabel"
+                        style="font-family: 'Comic Sans MS', 'Comic Sans', cursive; color: purple;">Update
+                        Aadhar</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/profile/update/aadharpic" method="post" enctype="multipart/form-data">
+                        <input type="file" name="image" id="aadhar" required>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn"
+                                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;"
+                                data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="panPicModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="panPicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="panPicModalLabel"
+                        style="font-family: 'Comic Sans MS', 'Comic Sans', cursive; color: purple;">Update
+                        PAN</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form action="/profile/update/panpic" method="post" enctype="multipart/form-data">
+                        <input type="file" name="image" id="panpic" required>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn"
+                                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;"
+                                data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Photo and BankSlips -->
+    <div style="display: flex; flex-direction: row; justify-content: space-between;" class="mb-4">
+        <div class="btns">
+            <button type="submit" id="btn" class="btn"
+                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
+                data-bs-target="#userPicModal">
+
+                <% if(user.panPic.length ===1){ %> 
+                    Update Photo
+                    <% }else{ %> 
+                        Add Photo
+                        <% } %> 
+
+            </button>
+        </div>
+
+        <div class="btns">
+            <button type="submit" id="btn" class="btn"
+                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
+                data-bs-target="#bankSlipsModal">
+                    Add Salaray Slips
+            </button>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="userPicModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="userPicModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userPicModalLabel"
+                        style="font-family: 'Comic Sans MS', 'Comic Sans', cursive; color: purple;">Update
+                        Photo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form action="/profile/update/userpic" method="post" enctype="multipart/form-data">
+                        <input type="file" name="image" id="userpic" required>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn"
+                                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;"
+                                data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="bankSlipsModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="bankSlipsModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bankSlipsModalLabel"
+                        style="font-family: 'Comic Sans MS', 'Comic Sans', cursive; color: purple;">Add SalarySlips
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <form action="/profile/update/bankslips" method="post" enctype="multipart/form-data">
+                        <input type="file" name="image" id="panpic" multiple required>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn"
+                                style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;"
+                                data-bs-dismiss="modal">Submit</button>
+                        </div>
+                    </form>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+
+
+    <script>
+        var input = document.getElementById("aadharNumber");
+
+        input.onkeydown = function () {
+            if (input.value.length > 0) {
+                if (input.value.length === 4 || input.value.length == 9) {
+                    input.value += " ";
+                }
+            }
+        }
+
+
+    </script>

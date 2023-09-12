@@ -1,0 +1,176 @@
+<% layout('layout/boilerplate') %>
+
+    <style>
+        .card {
+            padding: 2%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 3%;
+            margin-bottom: 3%;
+            /* border:dashed purple; */
+            border: 0.5px solid rgb(232, 228, 228);
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+            width: 300px;
+            font-size: 20px;
+        }
+
+        .card:hover {
+            padding: 2%;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 2%;
+            margin-bottom: 2%;
+            background-image: linear-gradient(to right, #EE6D98, #8A5EBF);
+            border: none;
+
+        }
+
+        .card:hover span {
+            color: white;
+        }
+
+        span {
+            margin: 2%;
+            color: purple;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .cont {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+
+        }
+
+        i {
+            margin-right: 10px;
+        }
+
+        .btn {
+            visibility: hidden;
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+
+
+        .card:hover .btn {
+            visibility: visible;
+            margin-top: 10px;
+        }
+
+        @media only screen and (min-width:600px) and (max-width:670px) {
+            .card {
+                width: 275px;
+            }
+        }
+
+        @media only screen and (min-width:900px) and (max-width:970px) {
+            .card {
+                width: 275px;
+            }
+        }
+
+        @media only screen and (min-width:1200px) and (max-width:1270px) {
+            .card {
+                width: 275px;
+            }
+        }
+
+        @media only screen and (min-width:1500px) and (max-width:1570px) {
+            .card {
+                width: 275px;
+            }
+        }
+
+        .btne,
+        .btnd {
+            width: 100px;
+        }
+
+        .btns {
+            display: flex;
+            justify-content: space-around;
+        }
+       
+    </style>
+
+
+
+    <% if(allLoans.length===0){ %>
+        <div class="text-center">
+            <img src="/stylesheets/empty.svg" class="ms-auto me-auto col-12" style="margin-top:5vh; height:60vh"></img>
+            <p style="font-weight:500;color: rgb(139, 138, 138); font-size: x-large;">
+                <% if(isPend===1) {%>
+                    No Pendings
+                    <% }else if(isPend===0) { %>
+                        No Active Proposals
+                        <% }else {%>
+                            Nothing Closed Till now &#128542;
+                            <% } %>
+            </p>
+            <a href="/loan/apply">Apply Here</a>
+        </div>
+        <% }else{ %>
+            <% if(isPend===1){ %>
+                <h1>Your Deals</h1>
+                <% }else if(isPend===-1){ %>
+                <h1>Closed Deals</h1>
+                    <% }else{ %>
+                        <h1>Active Deals For You</h1>
+                        <% } %> 
+                        <div class="cont">
+                            <% for(let loan of allLoans) {%>
+                                <div class="card ">
+                                    <span><i class="fa-solid fa-coins"></i>
+                                        <%= loan.amount %>
+                                    </span>
+                                    <span><i class="fa-solid fa-user"></i>
+                                        <%= loan.owner.name %>
+                                    </span>
+                                    <span><i class="fa-solid fa-percent"></i>
+                                        <%= loan.interest %>
+                                    </span>
+                                    <span><i class="fa-solid fa-calendar"></i>
+                                        <%= loan.timePeriod %>
+                                    </span>
+
+
+                                    <% if(loan.isPending===true){ %>
+
+                                        <% if(loan.owner.id===currentUser.id){ %>
+
+                                            <div class="btns">
+                                                <a class="btn  btne" href="/loan/<%=loan.id%>/edit"
+                                                    style="background-color:rgb(107, 14, 194); color: white;"><i
+                                                        class="fa-solid fa-pen-to-square"></i>Edit</a>
+
+                                                <form action="/loan/<%= loan.id %>/delete?_method=DELETE" method="post">
+                                                    <button type="submit" class="btn  btnd"
+                                                        style="background-color:rgb(107, 14, 194); color: white;">
+                                                        <i class="fa-solid fa-trash-can"></i>Delete
+
+                                                    </button>
+                                                </form>
+
+                                            </div>
+                                            <% }else{ %>
+                                                <form action="/loan/<%= loan.id %>/accept" method="post">
+                                                    <button class="btn btn-success">Accept</button>
+                                                </form>
+                                                <% } %>
+                                                    <a type="button" id="btn" class="btn "
+                                                        href="/loan/<%= loan.id %>/show"
+                                                        style="background-color:rgb(107, 14, 194); color: white;">ViewMore
+                                                        <i class="fa-solid fa-angles-right"></i></a>
+
+                                                    <% }else{ %>
+                                                        <span><i class="fa-solid fa-user-check"></i>
+                                                            <%= loan.acceptedBy.name %>
+                                                        </span>
+                                                        <% } %>
+
+                                </div>
+                                <% } %>
+                                    <% } %>
+
+                        </div>
