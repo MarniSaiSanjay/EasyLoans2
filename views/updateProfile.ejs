@@ -50,9 +50,9 @@
                 style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
                 data-bs-target="#aadharPicModal">
                 <% if(user.aadharPic.length ===1){ %> 
-                Update Aadhar
+                &#10003; Update Aadhar
                 <% }else{ %> 
-                    Add Aadhar
+                &#9888; Add Aadhar
                     <% } %> 
             </button>
         </div>
@@ -62,9 +62,9 @@
                 style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
                 data-bs-target="#panPicModal">
                 <% if(user.panPic.length ===1){ %> 
-                    Update PAN
+                &#10003; Update PAN
                     <% }else{ %> 
-                        Add PAN
+                    &#9888;  Add PAN
                         <% } %> 
             </button>
         </div>
@@ -191,9 +191,9 @@
                 data-bs-target="#userPicModal">
 
                 <% if(user.panPic.length ===1){ %> 
-                    Update Photo
+                    &#10003; Update Photo
                     <% }else{ %> 
-                        Add Photo
+                        &#9888; Add Photo
                         <% } %> 
 
             </button>
@@ -203,7 +203,12 @@
             <button type="submit" id="btn" class="btn"
                 style="background-image: linear-gradient(to right,#EE6D98,#8A5EBF);color: white;" data-bs-toggle="modal"
                 data-bs-target="#bankSlipsModal">
-                    Add Salaray Slips
+
+                <% if(user.salarySlips.length==0){ %>
+                    &#9888;</span> Add Salaray Slips
+                    <% }else{ %>
+                        &#10003; Update Salary Slips
+                        <% } %>
             </button>
         </div>
     </div>
