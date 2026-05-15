@@ -1,21 +1,25 @@
-<% if( (success && success.length) ){ %>
-  <div class="alert alert-success alert-dismissible fade show" role="alert">
-    <%= success %>
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-  </div>
-  <% } %>
-
-    <% if( (error && error.length) ){ %>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <%= error %>
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <% } %>
-
-        <% if(primary && primary.length){ %>
-          <div class="alert alert-primary alert-dismissible fade show" role="alert" style="font-size: 20px;">
-            <i class="fas fa-info-circle"></i>
-            <%= primary %>
-              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-          </div>
-          <% } %>
+<% if ((success && success.length) || (error && error.length) || (primary && primary.length)) { %>
+    <div class="flash-stack">
+        <% if (success && success.length) { %>
+            <div class="flash success" data-dismiss-auto>
+                <span class="dot"></span>
+                <span><%= success %></span>
+                <button type="button" class="close" aria-label="Dismiss" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+        <% } %>
+        <% if (error && error.length) { %>
+            <div class="flash error" data-dismiss-auto>
+                <span class="dot"></span>
+                <span><%= error %></span>
+                <button type="button" class="close" aria-label="Dismiss" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+        <% } %>
+        <% if (primary && primary.length) { %>
+            <div class="flash info" data-dismiss-auto>
+                <span class="dot"></span>
+                <span><%= primary %></span>
+                <button type="button" class="close" aria-label="Dismiss" onclick="this.parentElement.remove()">&times;</button>
+            </div>
+        <% } %>
+    </div>
+<% } %>

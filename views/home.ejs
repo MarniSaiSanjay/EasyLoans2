@@ -1,176 +1,166 @@
 <% layout('layout/boilerplate') %>
 
-    <style>
-        .card {
-            padding: 2%;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 3%;
-            margin-bottom: 3%;
-            /* border:dashed purple; */
-            border: 0.5px solid rgb(232, 228, 228);
-            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-            width: 300px;
-            font-size: 20px;
-        }
+<%
+    function fmtINR(n) {
+        if (n === undefined || n === null) return '—';
+        return Number(n).toLocaleString('en-IN');
+    }
+    function initials(name) {
+        if (!name) return '?';
+        var parts = String(name).trim().split(/\s+/);
+        if (parts.length === 1) return parts[0].slice(0, 2).toUpperCase();
+        return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+    }
 
-        .card:hover {
-            padding: 2%;
-            margin-left: auto;
-            margin-right: auto;
-            margin-top: 2%;
-            margin-bottom: 2%;
-            background-image: linear-gradient(to right, #EE6D98, #8A5EBF);
-            border: none;
+    var titles = {
+        '1':  ['Pending deals', 'Offers you posted that haven\'t been picked up yet.'],
+        '-1': ['Closed deals',  'Deals that have matched a counterparty.'],
+        '0':  ['Available to you', 'Open offers within your eligibility ceiling.']
+    };
+    var pendKey = String(isPend);
+    var heading = titles[pendKey][0];
+    var sub = titles[pendKey][1];
 
-        }
+    var pendingCount = allLoans.filter(function (l) { return l.isPending; }).length;
+    var closedCount  = allLoans.filter(function (l) { return !l.isPending; }).length;
+%>
 
-        .card:hover span {
-            color: white;
-        }
-
-        span {
-            margin: 2%;
-            color: purple;
-            font-family: 'Poppins', sans-serif;
-        }
-
-        .cont {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-around;
-
-        }
-
-        i {
-            margin-right: 10px;
-        }
-
-        .btn {
-            visibility: hidden;
-            margin-left: 10px;
-            margin-right: 10px;
-        }
-
-
-        .card:hover .btn {
-            visibility: visible;
-            margin-top: 10px;
-        }
-
-        @media only screen and (min-width:600px) and (max-width:670px) {
-            .card {
-                width: 275px;
-            }
-        }
-
-        @media only screen and (min-width:900px) and (max-width:970px) {
-            .card {
-                width: 275px;
-            }
-        }
-
-        @media only screen and (min-width:1200px) and (max-width:1270px) {
-            .card {
-                width: 275px;
-            }
-        }
-
-        @media only screen and (min-width:1500px) and (max-width:1570px) {
-            .card {
-                width: 275px;
-            }
-        }
-
-        .btne,
-        .btnd {
-            width: 100px;
-        }
-
-        .btns {
-            display: flex;
-            justify-content: space-around;
-        }
-       
-    </style>
-
-
-
-    <% if(allLoans.length===0){ %>
-        <div class="text-center">
-            <img src="/stylesheets/empty.svg" class="ms-auto me-auto col-12" style="margin-top:5vh; height:60vh"></img>
-            <p style="font-weight:500;color: rgb(139, 138, 138); font-size: x-large;">
-                <% if(isPend===1) {%>
-                    No Pendings
-                    <% }else if(isPend===0) { %>
-                        No Active Proposals
-                        <% }else {%>
-                            Nothing Closed Till now &#128542;
-                            <% } %>
-            </p>
-            <a href="/loan/apply">Apply Here</a>
+<div class="header-block" style="padding-bottom: 8px;">
+    <div>
+        <div class="eyebrow eyebrow-accent" style="margin-bottom: 10px;">
+            <% if (isPend === 0) { %>Marketplace<% } else if (isPend === 1) { %>Your activity<% } else { %>Archive<% } %>
         </div>
-        <% }else{ %>
-            <% if(isPend===1){ %>
-                <h1>Your Deals</h1>
-                <% }else if(isPend===-1){ %>
-                <h1>Closed Deals</h1>
-                    <% }else{ %>
-                        <h1>Active Deals For You</h1>
-                        <% } %> 
-                        <div class="cont">
-                            <% for(let loan of allLoans) {%>
-                                <div class="card ">
-                                    <span><i class="fa-solid fa-coins"></i>
-                                        <%= loan.amount %>
-                                    </span>
-                                    <span><i class="fa-solid fa-user"></i>
-                                        <%= loan.owner.name %>
-                                    </span>
-                                    <span><i class="fa-solid fa-percent"></i>
-                                        <%= loan.interest %>
-                                    </span>
-                                    <span><i class="fa-solid fa-calendar"></i>
-                                        <%= loan.timePeriod %>
-                                    </span>
+        <h1 class="h-title"><%= heading %></h1>
+        <p class="lede" style="margin-top: 8px;"><%= sub %></p>
+    </div>
 
+    <% if (currentUser && currentUser.max_amount && isPend === 0) { %>
+        <div style="text-align: right;">
+            <div class="eyebrow" style="margin-bottom: 6px;">Your ceiling</div>
+            <div class="h-display md mono" style="font-style: italic;">
+                <span style="font-family: var(--serif);">₹</span><%= fmtINR(currentUser.max_amount) %>
+            </div>
+            <div class="faint" style="font-size: 12px; margin-top: 4px;">
+                CIBIL-equivalent <span class="mono"><%= currentUser.cibil || '—' %></span>
+            </div>
+        </div>
+    <% } %>
+</div>
 
-                                    <% if(loan.isPending===true){ %>
+<nav class="tabs" style="margin-top: 12px; margin-bottom: 40px;">
+    <a href="/home" class="tab <%= isPend === 0 ? 'active' : '' %>">
+        Available
+    </a>
+    <a href="/home?isPending=true" class="tab <%= isPend === 1 ? 'active' : '' %>">
+        My deals
+        <% if (isPend === 1) { %><span class="count"><%= allLoans.length %></span><% } %>
+    </a>
+    <a href="/home?isPending=false" class="tab <%= isPend === -1 ? 'active' : '' %>">
+        Closed
+        <% if (isPend === -1) { %><span class="count"><%= allLoans.length %></span><% } %>
+    </a>
+</nav>
 
-                                        <% if(loan.owner.id===currentUser.id){ %>
+<% if (allLoans.length === 0) { %>
+    <div class="empty">
+        <img src="/stylesheets/empty.svg" alt="" style="width: 200px; max-width: 60%; height: auto; margin: 0 auto 20px; display: block; opacity: 0.85;">
+        <h2>
+            <% if (isPend === 1) { %>No pending offers
+            <% } else if (isPend === 0) { %>Nothing matches yet
+            <% } else { %>No closed deals
+            <% } %>
+        </h2>
+        <p>
+            <% if (isPend === 0) { %>
+                There aren't any open offers within your eligibility right now. Try posting one.
+            <% } else if (isPend === 1) { %>
+                Post a request or an offer and it will show up here while it waits for a match.
+            <% } else { %>
+                Once a deal matches a counterparty, you'll see the archive here.
+            <% } %>
+        </p>
+        <a href="/loan/apply" class="btn btn-primary btn-lg">
+            Post a deal
+            <i class="fa-solid fa-arrow-right arrow" style="font-size: 12px;"></i>
+        </a>
+    </div>
+<% } else { %>
+    <section class="loan-list">
+        <% for (let loan of allLoans) { %>
+            <div class="loan-row">
+                <div class="col col-amount" style="gap: 8px;">
+                    <span class="label">Principal</span>
+                    <div class="v">
+                        <span style="font-family: var(--serif);">₹</span><%= fmtINR(loan.amount) %>
+                    </div>
+                    <div class="row-flex" style="gap: 8px;">
+                        <% if (loan.category === 'provide') { %>
+                            <span class="pill accent"><span class="pill-dot"></span>Offering</span>
+                        <% } else { %>
+                            <span class="pill info"><span class="pill-dot"></span>Requesting</span>
+                        <% } %>
+                        <% if (loan.isPending) { %>
+                            <span class="pill warn"><span class="pill-dot"></span>Open</span>
+                        <% } else { %>
+                            <span class="pill"><span class="pill-dot"></span>Closed</span>
+                        <% } %>
+                    </div>
+                </div>
 
-                                            <div class="btns">
-                                                <a class="btn  btne" href="/loan/<%=loan.id%>/edit"
-                                                    style="background-color:rgb(107, 14, 194); color: white;"><i
-                                                        class="fa-solid fa-pen-to-square"></i>Edit</a>
+                <div class="col">
+                    <span class="label">Interest</span>
+                    <span class="value mono"><%= loan.interest %>%</span>
+                </div>
 
-                                                <form action="/loan/<%= loan.id %>/delete?_method=DELETE" method="post">
-                                                    <button type="submit" class="btn  btnd"
-                                                        style="background-color:rgb(107, 14, 194); color: white;">
-                                                        <i class="fa-solid fa-trash-can"></i>Delete
+                <div class="col">
+                    <span class="label">Tenure</span>
+                    <span class="value mono"><%= loan.timePeriod %> yr</span>
+                </div>
 
-                                                    </button>
-                                                </form>
+                <div class="col">
+                    <span class="label">
+                        <% if (!loan.isPending && loan.acceptedBy) { %>Counterparty<% } else { %>Posted by<% } %>
+                    </span>
+                    <div class="who">
+                        <span class="avatar"><%= initials(!loan.isPending && loan.acceptedBy ? loan.acceptedBy.name : loan.owner.name) %></span>
+                        <span class="value">
+                            <%= !loan.isPending && loan.acceptedBy ? loan.acceptedBy.name : loan.owner.name %>
+                        </span>
+                    </div>
+                </div>
 
-                                            </div>
-                                            <% }else{ %>
-                                                <form action="/loan/<%= loan.id %>/accept" method="post">
-                                                    <button class="btn btn-success">Accept</button>
-                                                </form>
-                                                <% } %>
-                                                    <a type="button" id="btn" class="btn "
-                                                        href="/loan/<%= loan.id %>/show"
-                                                        style="background-color:rgb(107, 14, 194); color: white;">ViewMore
-                                                        <i class="fa-solid fa-angles-right"></i></a>
-
-                                                    <% }else{ %>
-                                                        <span><i class="fa-solid fa-user-check"></i>
-                                                            <%= loan.acceptedBy.name %>
-                                                        </span>
-                                                        <% } %>
-
-                                </div>
-                                <% } %>
-                                    <% } %>
-
-                        </div>
+                <div class="actions">
+                    <% if (loan.isPending) { %>
+                        <% if (loan.owner.id === currentUser.id) { %>
+                            <a href="/loan/<%= loan.id %>/edit" class="btn btn-ghost btn-sm">
+                                <i class="fa-solid fa-pen" style="font-size: 11px;"></i>
+                                Edit
+                            </a>
+                            <form action="/loan/<%= loan.id %>/delete?_method=DELETE" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fa-solid fa-trash" style="font-size: 11px;"></i>
+                                    Delete
+                                </button>
+                            </form>
+                        <% } else { %>
+                            <a href="/loan/<%= loan.id %>/show" class="btn btn-ghost btn-sm">
+                                Details
+                            </a>
+                            <form action="/loan/<%= loan.id %>/accept" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-primary btn-sm">
+                                    Accept
+                                    <i class="fa-solid fa-arrow-right arrow" style="font-size: 10px;"></i>
+                                </button>
+                            </form>
+                        <% } %>
+                    <% } else { %>
+                        <a href="/loan/<%= loan.id %>/show" class="btn btn-ghost btn-sm">
+                            View record
+                            <i class="fa-solid fa-arrow-right arrow" style="font-size: 10px;"></i>
+                        </a>
+                    <% } %>
+                </div>
+            </div>
+        <% } %>
+    </section>
+<% } %>

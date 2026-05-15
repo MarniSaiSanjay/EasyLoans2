@@ -1,128 +1,46 @@
 <% layout('layout/boilerplate') %>
 
-    <style>
-        .page_404{
-            padding: 40px 0;
-            background: #fff;
-            font-family: 'Arvo', serif;
-        }
+<%
+    var status = (err && err.status) || 500;
+    var name = (err && err.name) || 'Error';
+    var msg = (err && err.message) || 'Something went wrong';
+    var isProd = process.env.NODE_ENV === 'production';
+    var img = status === 404 ? '/stylesheets/page404.png' : '/stylesheets/error.png';
+%>
 
+<section style="padding: 32px 0 24px; text-align: center;">
+    <div class="eyebrow eyebrow-accent" style="margin-bottom: 18px;">Halt</div>
+    <img src="<%= img %>" alt="" style="max-width: 360px; width: 100%; height: auto; margin: 0 auto 24px; display: block;">
+    <div class="h-display lg" style="color: var(--ink); font-size: 96px;"><%= status %></div>
+    <h1 class="h-title" style="margin-top: 16px;"><%= msg %></h1>
+    <p class="lede" style="margin: 12px auto 32px;">
+        <% if (status === 404) { %>
+            The page you were looking for has moved, been deleted, or never existed.
+        <% } else { %>
+            Something didn't go to plan on our side. Try again, or head back to the marketplace.
+        <% } %>
+    </p>
+    <div class="row-flex" style="justify-content: center;">
+        <button onclick="window.history.back()" class="btn btn-ghost">
+            <i class="fa-solid fa-arrow-left" style="font-size: 11px;"></i>
+            Go back
+        </button>
+        <a href="/home" class="btn btn-primary">
+            Back to marketplace
+            <i class="fa-solid fa-arrow-right arrow" style="font-size: 11px;"></i>
+        </a>
+    </div>
+</section>
 
-        @media screen and (max-width: 575px) {
-             .img1{
-            width: 150%;
-            position: relative;
-            right: 15%;
-            }
-            .img2{
-            width: 140%;
-            position: relative;
-            right: 15%;
-            }
-
-        }
-
-        @media screen and (min-width:576px) and (max-width: 991px) {
-            .img1, .img2{
-            width: 180%;
-            position: relative;
-            right: 20%;
-        }
-       
-        }
-        
-
-        @media screen and (min-width: 992px) {
-            .img1{
-                width: 120%;
-                position: relative;
-                left: 2vw;
-                bottom: 3vh;
-            }
-            .img2{
-                width: 100%;
-                position: relative;
-                left: 2vw;
-                bottom: 10vh;
-            }
-        }
-
-
-        .four_zero_four_bg h1 {
-            font-size: 80px;
-        }
-
-        .four_zero_four_bg h3 {
-            font-size: 80px;
-        }
-
-        .link_404 {
-            color: #fff !important;
-            padding: 10px 20px;
-            background: #39ac31;
-            margin: 20px 0;
-            display: inline-block;
-        }
-
-        @media screen and (min-width:992px) {
-            .contant_box_404 {
-            padding-left: 6vw;
-        }
-        }
-
-        
-    </style>
-
-    <div class="row mt-5">
-        <div class="col-8 offset-2">
-            <% if(process.env.NODE_ENV == "production" ) { %>
-                <section class="page_404">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-sm-12 ">
-                                <div class="col-sm-10 col-sm-offset-1  text-center">
-                                    <div class="four_zero_four_bg ">
-                                       <% if(error.status == 404) {%>  <img src="/stylesheets/page404.png" alt="IMG HERE" class="img1"> 
-                                       <% }else{ %> 
-                                        <img src="/stylesheets/error.png" alt="IMG HERE" class="img2"> 
-                                        <% } %> 
-                                       <h2> <%= error.status %> </h2>
-                                    </div>
-
-                                    <div class="contant_box_404" style="text-align: center;">
-                                        <h3 class="h2">
-                                            <%= err.message %>
-                                        </h3>
-                                        <button onclick="goBack()" class="btn btn-success">Go Back</button>
-                                        <!-- <a href="" class="link_404">Go to Home</a> -->
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-                <% } %>
-
-                    <% if(process.env.NODE_ENV != "production" ) { %>
-                        <div class="alert alert-danger" role="alert">
-                            <h3 class="alert-heading">
-                                <%= err.status %> : <%= err.name %>
-                            </h3>
-                            <h5>
-                                <%= err.message %>
-                            </h5>
-                            <hr>
-                            <p>
-                                <%= err.stack %>
-                            </p>
-                        </div>
-                        <button onclick="goBack()" class="btn btn-success"
-                            style="position: absolute; left: 75% ;">Back</button>
-                        <% } %>
+<% if (!isProd && err && err.stack) { %>
+    <section style="margin-top: 56px;">
+        <div class="eyebrow" style="margin-bottom: 12px;">Debug · development only</div>
+        <div class="surface" style="padding: 0;">
+            <div style="padding: 16px 20px; border-bottom: 1px solid var(--rule); display: flex; align-items: center; gap: 12px;">
+                <span class="pill danger"><span class="pill-dot"></span><%= status %></span>
+                <span class="mono" style="font-size: 13px;"><%= name %></span>
+            </div>
+            <pre class="mono" style="margin: 0; padding: 20px; font-size: 12px; line-height: 1.6; color: var(--ink-soft); white-space: pre-wrap; overflow-x: auto;"><%= err.stack %></pre>
         </div>
-
-        <script>
-            function goBack() {
-                window.history.back();
-            }
-        </script>
+    </section>
+<% } %>
