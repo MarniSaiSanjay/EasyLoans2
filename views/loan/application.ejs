@@ -1,68 +1,127 @@
 <% layout('layout/boilerplate') %>
 
-
-    <style>
-        body {
-            background-image: linear-gradient(to right, #EE6D98, #8A5EBF);
-        }
-
-        input,
-        select {
-            padding: 10px;
-            border: none;
-            border-radius: 10px;
-            margin: 10px;
-            font-size: 16px;
-            font-weight: 500;
-            line-height: 24px;
-            font-family: 'Poppins', sans-serif;
-            width: 70%;
-            background-color: rgba(129, 125, 125, 0.137);
-        }
-
-        /* .img_loan{
-            width: 110%;
-        } */
-
-        @media screen and (max-width: 760px) {
-
-            input,
-            select {
-                width: 95%;
-            }
-        }
-    </style>
-
-
-    <div class="contact">
-        <form action="/loan/apply" method="post" style="padding: 10px; margin-top: 60px; text-align: center;">
-            <div class="row"
-                style="background-color: white; padding:5%;margin-left: 10%;margin-right: 10%; border-radius: 10px; margin-top: -3%;margin-bottom: 0%;">
-                <h1 class="mb-4">THIS IS A FORM</h1>
-
-                <div class="col-lg-6" class="form" style="background-color: white;">
-                    <input type="number" name="amount" id="amount" placeholder="Amount" required>
-                    <br>
-                    <input type="number" name="interest" id="interest" step=".01" placeholder="Interest" required>
-                    <br>
-                    <input type="number" name="timePeriod" id="timePeriod" step=".1" placeholder="Tenure" required>
-                    <br>
-
-                    <select name="category" id="" required>
-                        <option value="provide">Provide</option>
-                        <option value="request">Request</option>
-                    </select>
-                    <div class="btns my-2">
-                        <button type="submit" id="btn" class="btn"
-                            style="background-color:rgb(107, 14, 194); color: white;">Submit</button>
-                    </div>
-                </div>
-
-                <div class="col-lg-6">
-                    <img src="/stylesheets/loan_form.jpg" height="300vh" width="300vh" style="width: 100%;"
-                        class="ms-auto me-auto">
-                </div>
-
-            </div>
-        </form>
+<div class="header-block" style="padding-bottom: 16px;">
+    <div>
+        <div class="eyebrow eyebrow-accent" style="margin-bottom: 6px;">New deal</div>
+        <h1 class="h-title">Post a deal</h1>
+        <p class="lede" style="margin-top: 8px;">
+            Tell the marketplace what you want. Other verified members can accept your terms or counter with a different rate.
+        </p>
     </div>
+    <a href="/home" class="btn btn-ghost">
+        <i class="fa-solid fa-arrow-left" style="font-size: 11px;"></i>
+        Cancel
+    </a>
+</div>
+
+<div style="display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 56px; align-items: center; margin-top: 24px;">
+    <form action="/loan/apply" method="post" id="applyForm">
+        <div class="eyebrow" style="margin-bottom: 14px;">I want to</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 32px;">
+            <label class="tile" style="cursor: pointer;">
+                <input type="radio" name="category" value="provide" checked style="display: none;" data-cat>
+                <div>
+                    <div class="t-label">Lender</div>
+                    <div class="t-value">Offer capital</div>
+                    <div class="faint" style="font-size: 13px; margin-top: 4px;">You have money to lend.</div>
+                </div>
+                <span class="t-mark">↗</span>
+            </label>
+            <label class="tile" style="cursor: pointer;">
+                <input type="radio" name="category" value="request" style="display: none;" data-cat>
+                <div>
+                    <div class="t-label">Borrower</div>
+                    <div class="t-value">Request capital</div>
+                    <div class="faint" style="font-size: 13px; margin-top: 4px;">You need money.</div>
+                </div>
+                <span class="t-mark">↘</span>
+            </label>
+        </div>
+
+        <div class="surface">
+            <div class="field">
+                <label class="label" for="amount">Amount (₹)</label>
+                <input type="number" id="amount" name="amount" min="1" max="100000000" required
+                    placeholder="e.g. 500000">
+                <% if (currentUser && currentUser.max_amount) { %>
+                    <span class="help">Your eligibility ceiling is ₹<%= Number(currentUser.max_amount).toLocaleString('en-IN') %>.</span>
+                <% } %>
+            </div>
+
+            <div class="field-row">
+                <div class="field">
+                    <label class="label" for="interest">Interest rate (%)</label>
+                    <input type="number" id="interest" name="interest" step="0.01" min="0" max="30" required
+                        placeholder="e.g. 11.5">
+                    <span class="help">Annual rate. Counter-offers may change this.</span>
+                </div>
+                <div class="field">
+                    <label class="label" for="timePeriod">Tenure (years)</label>
+                    <input type="number" id="timePeriod" name="timePeriod" step="0.1" min="0.1" max="50" required
+                        placeholder="e.g. 3">
+                </div>
+            </div>
+
+            <div class="divider"></div>
+
+            <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                <div class="faint" style="font-size: 13px; max-width: 36ch;">
+                    Once posted, your deal becomes visible to verified members within their ceiling.
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Post deal
+                    <i class="fa-solid fa-arrow-right arrow" style="font-size: 12px;"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <aside class="apply-side">
+        <img src="/stylesheets/loan_form.jpg" alt="" style="width: 100%; height: auto; border-radius: var(--r-md); border: 1px solid var(--rule); object-fit: cover;">
+    </aside>
+</div>
+
+<style>
+    @media (max-width: 860px) {
+        div[style*="grid-template-columns: minmax(0, 1.3fr)"] {
+            grid-template-columns: 1fr !important;
+        }
+        .apply-side { order: -1; }
+        .apply-side img { max-height: 240px; object-fit: cover; }
+    }
+</style>
+
+<style>
+    .tile input[type="radio"]:checked ~ div .t-label {
+        color: var(--accent);
+    }
+    label.tile:has(input[type="radio"]:checked) {
+        border-color: var(--ink);
+        background: var(--accent-wash);
+    }
+    label.tile:has(input[type="radio"]:checked) .t-mark {
+        color: var(--accent-deep);
+    }
+</style>
+
+<script>
+    // Fallback for browsers without :has() — sync .selected class
+    (function () {
+        var inputs = document.querySelectorAll('[data-cat]');
+        function sync() {
+            inputs.forEach(function (i) {
+                var label = i.closest('.tile');
+                if (!label) return;
+                if (i.checked) {
+                    label.style.borderColor = 'var(--ink)';
+                    label.style.background = 'var(--accent-wash)';
+                } else {
+                    label.style.borderColor = '';
+                    label.style.background = '';
+                }
+            });
+        }
+        inputs.forEach(function (i) { i.addEventListener('change', sync); });
+        sync();
+    })();
+</script>

@@ -1,134 +1,121 @@
 <% layout('layout/boilerplate') %>
 
+<%
+    function fmtINR(n) {
+        if (n === undefined || n === null) return '—';
+        return Number(n).toLocaleString('en-IN');
+    }
+    function maskAadhar(a) {
+        if (!a) return '';
+        var s = String(a).replace(/\s+/g, '');
+        if (s.length < 4) return a;
+        return 'XXXX XXXX ' + s.slice(-4);
+    }
+    function maskAccount(a) {
+        if (!a) return '';
+        var s = String(a);
+        if (s.length < 4) return s;
+        return '••••' + s.slice(-4);
+    }
+
+    var loans = currentUser.loans || [];
+    var pending = loans.filter(function (l) { return l.isPending; }).length;
+    var closed = loans.length - pending;
+
+    var hasKyc = currentUser.aadharNumber && currentUser.aadharNumber !== '';
+    var cibil = currentUser.cibil || 0;
+    var maxAmt = currentUser.max_amount || 0;
+    var pct = Math.min(100, Math.round(((cibil - 300) / 400) * 100));
+    if (!cibil) pct = 0;
+%>
+
+<div class="header-block" style="padding-bottom: 28px;">
+    <div class="row-flex" style="gap: 18px; align-items: center;">
+        <% if (currentUser.profilePicUrl) { %>
+            <img src="<%= currentUser.profilePicUrl %>" alt=""
+                style="width: 64px; height: 64px; border-radius: 50%; border: 1px solid var(--rule-strong); object-fit: cover;">
+        <% } else { %>
+            <span style="width: 64px; height: 64px; border-radius: 50%; background: var(--paper-tint); border: 1px solid var(--rule-strong); display: inline-flex; align-items: center; justify-content: center; font-family: var(--serif); font-style: italic; font-size: 28px; color: var(--ink);">
+                <%= (currentUser.name || 'U').charAt(0).toUpperCase() %>
+            </span>
+        <% } %>
+        <div>
+            <div class="eyebrow eyebrow-accent" style="margin-bottom: 6px;">Profile</div>
+            <h1 class="h-title" style="margin: 0;"><%= currentUser.name || 'Unnamed' %></h1>
+            <div class="faint" style="margin-top: 4px; font-size: 14px;"><%= currentUser.email %></div>
+        </div>
+    </div>
+    <a href="/profile/update" class="btn btn-primary">
+        Edit profile
+        <i class="fa-solid fa-arrow-right arrow" style="font-size: 11px;"></i>
+    </a>
+</div>
+
+<% if (!hasKyc) { %>
+    <div class="flash error" style="margin-bottom: 32px;">
+        <span class="dot"></span>
+        <span>Complete your KYC to start posting deals. <a href="/profile/update" class="bare" style="color: inherit; text-decoration: underline;">Add identity details</a>.</span>
+    </div>
+<% } %>
+
+<!-- Top stats strip -->
+<section class="surface flush" style="margin-bottom: 32px;">
+    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;">
+        <div style="padding: 24px 28px; border-right: 1px solid var(--rule);">
+            <div class="eyebrow" style="margin-bottom: 12px;">Eligibility ceiling</div>
+            <div class="h-display sm" style="font-style: italic;">
+                <span style="font-family: var(--serif);">₹</span><%= fmtINR(maxAmt) %>
+            </div>
+        </div>
+        <div style="padding: 24px 28px; border-right: 1px solid var(--rule);">
+            <div class="eyebrow" style="margin-bottom: 12px;">CIBIL-equivalent</div>
+            <div class="h-display sm mono"><%= cibil || '—' %></div>
+            <div class="gauge" style="margin-top: 12px;">
+                <div class="gauge-track"><div class="gauge-fill" style="width: <%= pct %>%;"></div></div>
+                <div class="gauge-labels"><span>300</span><span>700</span></div>
+            </div>
+        </div>
+        <div style="padding: 24px 28px; border-right: 1px solid var(--rule);">
+            <div class="eyebrow" style="margin-bottom: 12px;">Open deals</div>
+            <div class="h-display sm mono"><%= pending %></div>
+        </div>
+        <div style="padding: 24px 28px;">
+            <div class="eyebrow" style="margin-bottom: 12px;">Closed deals</div>
+            <div class="h-display sm mono"><%= closed %></div>
+        </div>
+    </div>
     <style>
-        span {
-            margin: 10px;
-            color: purple;
-            font-family: 'Poppins', sans-serif;
-            font-weight: 500;
-            line-height: 24px;
+        @media (max-width: 720px) {
+            section.surface.flush > div { grid-template-columns: 1fr 1fr !important; }
+            section.surface.flush > div > div:nth-child(2n) { border-right: 0 !important; }
+            section.surface.flush > div > div:nth-child(-n+2) { border-bottom: 1px solid var(--rule); }
         }
-
-        i {
-            margin: 12px;
-        }
-
-        .profile {
-            width: 60%;
-            font-size: 2rem;
-            /* text-align: left; */
-        }
-
-        @media screen and (max-width: 991px) {
-            .profile {
-                width: 80%;
-            }
-        }
-
-        .profile {
-            font-size: 20px;
-        }
-
-        @media screen and (max-width:767px) and (min-width: 576px){
-            .profile{
-                font-size: 18px;
-            }
-        }
-
-        @media screen and (max-width:556px) and (min-width: 414px){
-            .profile{
-                font-size: 3.35vw;
-            }
-        }
-
-        @media screen and (max-width: 413px) {
-            .profile{
-                font-size: 3.25vw;
-            }
-        }
-
-
     </style>
+</section>
 
-
-
-    <h1><img src="<%= currentUser.profilePicUrl %>" alt="" width="60px" height="60px" style="border-radius: 50%;"> PROFILE</h1>
-
-    <div class="profile mb-4"
-        style="background-color: white; padding:5%; margin-left: auto;margin-right: auto; border-radius: 10px;border: dashed purple; ">
-
-
-        <span><i class="fa-solid fa-user"></i>Name:
-            <%= currentUser.name %>
-        </span>
-        <br>
-        <span><i class="fa-solid fa-envelope"></i>Email: 
-            <%= currentUser.email %>
-        </span>
-        
-
-        <br>
-        <span> <i class="fa-solid fa-file"></i>Applications: <%= currentUser.loans.length %></span>
-        <br>
-        <% const loa=currentUser.loans.filter((x)=> { return x.isPending === true }); %>
-
-        <span> <i class="fa-solid fa-circle-exclamation"></i>Pending: <%= loa.length %></span>
-        <br>
-        <span> <i class="fa-solid fa-check-to-slot"></i>Closed: <%= currentUser.loans.length - loa.length %></span>
-        <br>
-        <% if(currentUser.aadharNumber !=='' ){ %>
-            <span><i class="fa-solid fa-id-card"></i>Aadhar: 
-                <%= currentUser.aadharNumber %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-id-card-clip"></i>PAN: 
-                <%= currentUser.panNumber %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-building-columns"></i>Acc.No: 
-                <%= currentUser.accountNumber %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-money-check"></i>IFSC: 
-                <%= currentUser.ifscCode %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-sack-dollar"></i>CTC: 
-                <%= currentUser.ctc %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-check-to-slot"></i>CIBIL: 
-                <%= currentUser.cibil %>
-            </span>
-            <br>
-            <span><i class="fa-solid fa-handshake-simple"></i>Max Loan Amount: 
-                <%= currentUser.max_amount %>
-            </span>
-            <br>
-            <% }else{ %>
-                <br>
-                Update Aadhar and PAN details <a href="/profile/update">here</a>
-                <br>
-                <% } %>
-
-                <div style="display: flex; justify-content: center;">
-                    <a href="/profile/update" id="btn" class="btn mt-2 "
-                    style="background-color:rgb(107, 14, 194); color: white; font-size: 18px;">Update</a>
-                </div>
-               
-
+<!-- KYC block -->
+<section style="margin-bottom: 40px;">
+    <div class="header-block">
+        <div>
+            <div class="eyebrow" style="margin-bottom: 6px;">Identity & banking</div>
+            <h2 class="h-section">KYC details</h2>
+        </div>
     </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <% if (hasKyc) { %>
+        <div class="kv">
+            <div class="row"><div class="k">Aadhar</div><div class="v"><%= maskAadhar(currentUser.aadharNumber) %></div></div>
+            <div class="row"><div class="k">PAN</div><div class="v"><%= currentUser.panNumber %></div></div>
+            <div class="row"><div class="k">Bank account</div><div class="v"><%= maskAccount(currentUser.accountNumber) %></div></div>
+            <div class="row"><div class="k">IFSC</div><div class="v"><%= currentUser.ifscCode %></div></div>
+            <div class="row"><div class="k">Reported CTC</div><div class="v"><span style="font-family: var(--serif); font-style: italic; font-size: 16px;">₹</span><%= fmtINR(currentUser.ctc) %></div></div>
+        </div>
+    <% } else { %>
+        <div class="empty">
+            <div class="glyph">!</div>
+            <h2>No KYC on file</h2>
+            <p>Add your Aadhar, PAN and banking details to unlock the marketplace.</p>
+            <a href="/profile/update" class="btn btn-primary">Add KYC details</a>
+        </div>
+    <% } %>
+</section>

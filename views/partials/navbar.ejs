@@ -1,90 +1,49 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-<style>
-    .navbar-brand {
-        margin-left: 20px;
-        margin-top: 0px;
-    }
+<header class="topbar">
+    <div class="topbar-inner">
+        <a href="/home" class="brand">
+            <span class="word">EasyLoans</span>
+        </a>
 
-    .nav-item {
-        margin-bottom: 10px;
-        margin-right: 13px;
-        margin-top: 2px;
-        font-size: 16px;
-        font-weight: 700;
-        line-height: 24px;
-        font-family: 'Poppins', sans-serif;
-        ;
-    }
-</style>
+        <button class="nav-toggle" type="button" aria-label="Toggle navigation" data-nav-toggle>
+            <i class="fa-solid fa-bars"></i>
+        </button>
 
-<nav class="navbar navbar-expand-lg navbar-light py-1"
-    style=" background-image:linear-gradient(to right,#EE6D98,#8A5EBF) ; ">
-    <a class="navbar-brand" href="/home"
-        style="font-size:1.75rem; font-family: 'Comic Sans MS', 'Comic Sans', cursive;color: white;">EasyLoans</a>
-
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#loginnavbar"
-        aria-controls="loginnavbar" aria-expanded="false" aria-label="Toggle navigation" style="color:white;">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="loginnavbar">
-        
-        <% if(currentUser !== undefined ){ %>
-        <ul class="navbar-nav me-auto" style="position: relative; top: 9px;font-weight: 500;font-size: large;">
-            <li class="nav-item">
-                <a class="nav-link" href="/home" style="color: white;font-weight: 500;font-size: large;">Home</a>
-            </li>
-            <% if(currentUser !=='undefined' ){ %>
-                <li class="nav-item">
-                    <a class="nav-link" href="/home?isPending=true"
-                        style="color: white;font-weight: 500;font-size: large;">My Deals</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/home?isPending=false"
-                        style="color: white;font-weight: 500;font-size: large;">Closed</a>
-                </li>
-                <% } %>
+        <ul class="nav-links" data-nav-menu>
+            <% if (currentUser !== undefined) { %>
+                <li><a href="/home" class="nav-link">Browse</a></li>
+                <li><a href="/home?isPending=true" class="nav-link">My deals</a></li>
+                <li><a href="/home?isPending=false" class="nav-link">Closed</a></li>
+            <% } %>
         </ul>
-        <% } %> 
-        <ul class="navbar-nav ms-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="/about"
-                    style="color: white;font-weight: 500;font-size: large;position: relative; top: 9px;">About</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link <%= currentUser === 'undefined' ? 'disabled' : '' %>" href="/loan/apply"
-                    style="color: white;font-weight: 500;font-size: large;position: relative; top: 9px;">Apply</a>
-            </li>
-            <% if(currentUser !== undefined ){ %>
 
-                <li class="nav-item">
-                    <a class="nav-link"
-                        style="color: white;font-weight: 500;font-size: large;position: relative; top: 9px;"
-                        href="/auth/logout"><i class="fa-solid fa-right-from-bracket fa-xl"
-                            style="font-size: 30px;"></i></a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link mx-1" style="color: white;font-weight: 500;font-size: large;" href="/profile">
-                        <img src="<%= currentUser.profilePicUrl %>" alt="ProfilePic" style="border-radius: 50%;"
-                            width="40px">
+        <ul class="nav-links right">
+            <li><a href="/about" class="nav-link">About</a></li>
+            <% if (currentUser !== undefined) { %>
+                <li>
+                    <a href="/loan/apply" class="btn btn-accent btn-sm">
+                        Post a deal
+                        <i class="fa-solid fa-arrow-right arrow" style="font-size: 11px;"></i>
                     </a>
-
                 </li>
-                <% }else{ %>
-                    <li class="nav-item">
-                        <a class="nav-link"
-                            style="color: white;font-weight: 500;font-size: large;position: relative; top: 9px;"
-                            href="/auth/login">LogIn</a>
-                    </li>
-                    <% } %>
+                <li>
+                    <a href="/profile" class="nav-link" aria-label="Profile" style="padding:0;">
+                        <% if (currentUser.profilePicUrl) { %>
+                            <img src="<%= currentUser.profilePicUrl %>" alt="" class="nav-avatar">
+                        <% } else { %>
+                            <span class="nav-avatar" style="display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;background:var(--paper-tint);">
+                                <%= (currentUser.name || 'U').charAt(0).toUpperCase() %>
+                            </span>
+                        <% } %>
+                    </a>
+                </li>
+                <li>
+                    <a href="/auth/logout" class="nav-icon-btn" aria-label="Sign out">
+                        <i class="fa-solid fa-arrow-right-from-bracket" style="font-size: 12px;"></i>
+                    </a>
+                </li>
+            <% } else { %>
+                <li><a href="/auth/login" class="btn btn-primary btn-sm">Sign in</a></li>
+            <% } %>
         </ul>
     </div>
-
-</nav>
-
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
-    crossorigin="anonymous"></script>
+</header>
