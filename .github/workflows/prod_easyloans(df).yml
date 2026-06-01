@@ -51,15 +51,15 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ED333A29CD0D476696FBD6B0F6B1E095 }}
-          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_C28A93D498A54031A97195A5D27BA79D }}
-          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_B17960824BFE40EFA96CC2FEDABFF20F }}
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_62EDF906810249D58469BB35A2871EC8 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_2D7B4C836CD9486EBC61450234B82A78 }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_873100930B8E4DA59F4E59B8E563D6B4 }}
 
       - name: 'Deploy to Azure Web App'
         id: deploy-to-webapp
         uses: azure/webapps-deploy@v3
         with:
           app-name: 'easyloans'
-          slot-name: 'Production'
+          slot-name: 'df'
           package: .
           
