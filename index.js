@@ -24,6 +24,7 @@ const passportSetup = require('./config/passportSetup'); // This is to set up pa
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 app.use(express.urlencoded({ extended: true })); // TO PARSE DATA 
+app.use(express.json()); // TO PARSE JSON (for chat API)
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, 'public')));
 app.engine('ejs', ejsMate);
@@ -266,6 +267,7 @@ app.get('/', (req, res) => {
 
 app.use('/loan', require('./routes/loan'));
 app.use('/auth', require('./routes/auth'));
+app.use('/api/chat', require('./routes/chat'));
 
 
 //404 ROUTE:
